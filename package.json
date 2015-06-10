@@ -1,0 +1,20 @@
+{
+  "name": "htm_tutorial",
+  "version": "0.0.1",
+  "description": "Interactive tutorial for learning homogeneous transformation matrices",
+  "author": {
+    "name": "Sterling McLeod",
+    "email": "sterlingmcleod9@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sterlingm/htm_tutorial.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sterlingm/htm_tutorial/issues"
+  },
+  "dependencies": {
+    "three": "~0.71.0",
+    "gl-matrix": "~2.1.0"
+  }
+}
