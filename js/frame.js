@@ -40,8 +40,16 @@ Frame.common =
     
     var result = new Frame(origin, i_hat, j_hat, k_hat);
     return result;
+  },
+
+
+  /**
+   * Return f1_T_f2
+   */
+  getTransform: function(f1, f2)
+  {
   }
-}
+} // End common
 
 Frame.prototype.draw = function(scene)
 {

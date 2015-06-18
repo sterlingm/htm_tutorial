@@ -25,6 +25,8 @@ function initScene()
   
   f1 = Frame.common.unit();
   f1.print();
+  var htm = new HTM(f1);
+  htm.print();
 
   // Set init flag
   init = true;
