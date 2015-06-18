@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "three": "~0.71.0",
-    "gl-matrix": "~2.1.0"
+    "gl-matrix": "~2.3.1"
   }
 }

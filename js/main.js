@@ -25,7 +25,12 @@ function initScene()
   
   f1 = Frame.common.unit();
   f1.print();
-  var htm = new HTM(f1);
+  
+  f2 = Frame.common.unit();
+  f2.i[0] = -1;
+  f2.print();
+  
+  var htm = new HTM.createFromTwoFrames(f1, f2);
   htm.print();
 
   // Set init flag
