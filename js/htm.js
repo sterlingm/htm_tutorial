@@ -106,9 +106,9 @@ HTM.prototype.update = function()
   k[2]  = vec3.dot(this.B.k, this.A.k);
 
   // Set position vector
-  this.T[3]  = this.B.origin[0] - this.A.origin[0]; 
-  this.T[7]  = this.B.origin[1] - this.A.origin[1]; 
-  this.T[11] = this.B.origin[2] - this.A.origin[2]; 
+  this.T[3]  = this.B.p[0] - this.A.p[0]; 
+  this.T[7]  = this.B.p[1] - this.A.p[1]; 
+  this.T[11] = this.B.p[2] - this.A.p[2]; 
 
   // Set rotation matrix
   this.T[0] = vec3.dot(this.B.i, this.A.i);

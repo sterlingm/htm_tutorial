@@ -65,10 +65,20 @@ function onWindowResize()
 
 
 
+function sleep(milliseconds) {
+var start = new date().gettime();
+for (var i = 0; i < 1e7; i++) {
+  if ((new date().gettime() - start) > milliseconds){
+    break;
+  }
+}
+}
+
 function render() 
 {
   if(!init)
   {
+    console.log("Calling initScene");
     initScene();
   }
   
@@ -78,11 +88,15 @@ function render()
 
   // Draw a frame
   A.draw(scene);
+  //scene.add(A.i_arrow);
+  //console.log(A.i_arrow);
 
-  c = new vec3.fromValues(1,0,0);
+  /*c = new vec3.fromValues(0.005,0,0);
   console.log("c is : "+c);
-  B.translate(c);
+  A.translate(c);
   B.print();
+
+  B.draw(scene);*/
 
   // Render
   renderer.render( scene, camera );
