@@ -1,7 +1,7 @@
 var init=false, pause_animation=false;
 var scene, camera, controls, renderer;
 
-var f1;
+var A, B, c;
 
 function initScene()
 {
@@ -23,14 +23,15 @@ function initScene()
   document.onkeyup = cb_keyUp;
   window.addEventListener( 'resize', onWindowResize, false );
   
-  f1 = Frame.common.unit();
-  f1.print();
+  A = Frame.common.unit();
+  A.print();
   
-  f2 = Frame.common.unit();
-  f2.i[0] = -1;
-  f2.print();
+  B = Frame.common.rand();
+  B.print();
   
-  var htm = new HTM.createFromTwoFrames(f1, f2);
+  var htm = new HTM.createFromTwoFrames(A, B);
+  console.log("Initial HTM: ");
+  htm.print();
   htm.print();
 
   // Set init flag
@@ -76,7 +77,12 @@ function render()
   controls.update(); 
 
   // Draw a frame
-  f1.draw(scene);
+  A.draw(scene);
+
+  c = new vec3.fromValues(1,0,0);
+  console.log("c is : "+c);
+  B.translate(c);
+  B.print();
 
   // Render
   renderer.render( scene, camera );

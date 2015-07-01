@@ -68,6 +68,28 @@ Frame.prototype.draw = function(scene)
   scene.add(k_arrow);
 }
 
+
+
+Frame.prototype.translate = function(vec)
+{
+  console.log("In translate");
+  console.log("vec[0]: "+vec[0]+ " vec[1]: "+vec[1]+" vec[2]: "+vec[2]);
+  var copy;
+  vec3.copy(copy, this.p);  
+  //vec3.add(this.p, this.p, vec);
+  this.p = vec3.add(this.p, vec);
+}
+
+Frame.prototype.translateOnAxis = function(axis, offset)
+{
+  this.p[axis] += offset; 
+}
+
+
+
+
+
+
 Frame.prototype.print = function()
 {
   console.log(" Origin: ("+this.origin[0]+", "+this.origin[1]+", "+this.origin[2]+")");
