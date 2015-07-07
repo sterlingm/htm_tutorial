@@ -1,7 +1,15 @@
+
+
+
+
 var init=false, pause_animation=false;
 var scene, camera, controls, renderer;
 
 var A, B, c;
+
+
+initScene();
+
 
 function initScene()
 {
@@ -10,14 +18,14 @@ function initScene()
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
   camera.position.z = 5;
-
-  // Create controls object for mouse control of the scene
-  controls = new THREE.OrbitControls( camera );
   
   // Create Renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
+
+  // Create controls object for mouse control of the scene
+  controls = new THREE.OrbitControls( camera, renderer.domElement );
 
   // Callbacks, listeners
   document.onkeyup = cb_keyUp;
@@ -26,13 +34,21 @@ function initScene()
   A = Frame.common.unit();
   A.print();
   
+  scene.add(A.i_arrow);
+  scene.add(A.j_arrow);
+  scene.add(A.k_arrow);
+
   B = Frame.common.rand();
   B.print();
   
-  var htm = new HTM.createFromTwoFrames(A, B);
+  scene.add(B.i_arrow);
+  scene.add(B.j_arrow);
+  scene.add(B.k_arrow);
+  
+  /*var htm = new HTM.createFromTwoFrames(A, B);
   console.log("Initial HTM: ");
   htm.print();
-  htm.print();
+  htm.print();*/
 
   // Set init flag
   init = true;
@@ -40,6 +56,7 @@ function initScene()
   // Call render
   render();
 }
+
 
 
 function cb_keyUp(event)
@@ -64,16 +81,6 @@ function onWindowResize()
 }
 
 
-
-function sleep(milliseconds) {
-var start = new date().gettime();
-for (var i = 0; i < 1e7; i++) {
-  if ((new date().gettime() - start) > milliseconds){
-    break;
-  }
-}
-}
-
 function render() 
 {
   if(!init)
@@ -86,17 +93,16 @@ function render()
   requestAnimationFrame(render);
   controls.update(); 
 
+
   // Draw a frame
-  A.draw(scene);
+  //A.draw(scene);
   //scene.add(A.i_arrow);
   //console.log(A.i_arrow);
 
-  /*c = new vec3.fromValues(0.005,0,0);
+  c = new vec3.fromValues(0.05,0,0);
   console.log("c is : "+c);
   A.translate(c);
-  B.print();
-
-  B.draw(scene);*/
+  A.updateMesh();
 
   // Render
   renderer.render( scene, camera );
