@@ -38,12 +38,12 @@ function initScene()
   scene.add(A.j_arrow);
   scene.add(A.k_arrow);
 
-  B = Frame.common.rand();
+  /*B = Frame.common.rand();
   B.print();
   
   scene.add(B.i_arrow);
   scene.add(B.j_arrow);
-  scene.add(B.k_arrow);
+  scene.add(B.k_arrow);*/
   
   /*var htm = new HTM.createFromTwoFrames(A, B);
   console.log("Initial HTM: ");
@@ -99,10 +99,10 @@ function render()
   //scene.add(A.i_arrow);
   //console.log(A.i_arrow);
 
-  c = new vec3.fromValues(0.05,0,0);
-  console.log("c is : "+c);
+  c = new vec3.fromValues(0.005,0,0);
   A.translate(c);
   A.updateMesh();
+  //B.updateMesh();
 
   // Render
   renderer.render( scene, camera );
