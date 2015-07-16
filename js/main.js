@@ -33,6 +33,8 @@ function initScene()
   
   A = Frame.common.unit();
   A.print();
+  //c = new vec3.fromValues(0, 0, 1);
+  //A.selfRotation([0,0,1], 1.5708);
   
   scene.add(A.i_arrow);
   scene.add(A.j_arrow);
@@ -99,9 +101,11 @@ function render()
   //scene.add(A.i_arrow);
   //console.log(A.i_arrow);
 
-  c = new vec3.fromValues(0.005,0,0);
-  A.translate(c);
-  A.updateMesh();
+  c = new vec3.fromValues(0, 0, 1);
+  A.selfRotation(c, 0.05);
+  //c = new vec3.fromValues(0.005,0,0);
+  //A.translate(vec3.fromValues(0.005,0,0));
+  //A.updateMesh();
   //B.updateMesh();
 
   // Render

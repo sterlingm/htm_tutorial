@@ -9,6 +9,14 @@ var Frame = function(p, i, j, k)
   this.k = k;
 
 
+  this.T_w = mat4.create();
+  var q = quat.create();
+  quat.setAxes(q, this.k, this.i, this.j);
+  console.log("q: "+quat.str(q));
+
+  mat4.fromRotationTranslation(this.T_w, q, this.p);
+  console.log("T_w: "+mat4.str(this.T_w));
+
   var p_three = new THREE.Vector3(this.p[0], this.p[1], this.p[2]);
   var i_three = new THREE.Vector3(this.i[0], this.i[1], this.i[2]);
   var j_three = new THREE.Vector3(this.j[0], this.j[1], this.j[2]);
@@ -66,6 +74,8 @@ Frame.common =
    */
   getTransform: function(f1, f2)
   {
+    var htm = HTM.createFromTwoFrames(f1, f2);
+    return htm;
   }
 } // End common
 
@@ -84,6 +94,35 @@ Frame.prototype.translate = function(vec)
 Frame.prototype.translateOnAxis = function(axis, offset)
 {
   this.p[axis] += offset; 
+}
+
+/**
+ * @param axis unit vector in direction of axis given as array with 3 elements
+ */
+Frame.prototype.selfRotation = function(axis, rad)
+{
+  console.log("In selfRotation");
+  console.log("axis: "+axis[0]+", "+axis[1]+", "+axis[2]);
+  console.log("rad: "+rad);
+  var R = mat4.create();
+  mat4.fromRotation(R, rad, axis);
+
+  mat4.multiply(this.T_w, R, this.T_w);
+  console.log("After rotation, T_w: "+mat4.str(this.T_w));
+  
+  this.updateAxes();
+  this.updateMesh();
+}
+
+Frame.prototype.updateAxes = function()
+{
+  var i = [this.T_w[0], this.T_w[4], this.T_w[8]];
+  var j = [this.T_w[1], this.T_w[5], this.T_w[9]];
+  var k = [this.T_w[2], this.T_w[6], this.T_w[10]];
+
+  this.i = i;
+  this.j = j;
+  this.k = k;
 }
 
 
@@ -112,6 +151,7 @@ Frame.prototype.updateMesh = function()
   this.i_arrow.cone.position.y = p_three.y+1;
   this.i_arrow.cone.position.z = p_three.z;
   
+  this.i_arrow.setDirection(i_three);
   
   /*
    * j-arrow
@@ -136,6 +176,8 @@ Frame.prototype.updateMesh = function()
   this.j_arrow.cone.position.x = p_j.x;
   this.j_arrow.cone.position.y = p_j.y+1;
   this.j_arrow.cone.position.z = p_j.z;
+  
+  this.j_arrow.setDirection(j_three);
   
   /*this.j_arrow.line.position.x = p_three.y;
   this.j_arrow.line.position.y = -p_three.x;
@@ -173,6 +215,8 @@ Frame.prototype.updateMesh = function()
   this.k_arrow.cone.position.y = p_k.y+1;
   this.k_arrow.cone.position.z = p_k.z;
   
+  this.k_arrow.setDirection(k_three);
+  
   /*this.k_arrow.line.position.x = p_three.z;
   this.k_arrow.line.position.y = p_three.y;
   this.k_arrow.line.position.z = p_three.x;
@@ -181,8 +225,6 @@ Frame.prototype.updateMesh = function()
   this.k_arrow.cone.position.y = p_three.y+1;
   this.k_arrow.cone.position.z = p_three.x;*/
 
-  
-  
   
   
   var i_three = new THREE.Vector3(this.i[0], this.i[1], this.i[2]);
