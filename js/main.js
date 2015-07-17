@@ -104,8 +104,8 @@ function render()
   c = new vec3.fromValues(0, 0, 1);
   A.selfRotation(c, 0.05);
   //c = new vec3.fromValues(0.005,0,0);
-  //A.translate(vec3.fromValues(0.005,0,0));
-  //A.updateMesh();
+  A.translate(vec3.fromValues(0.005,0,0));
+  A.updateMesh();
   //B.updateMesh();
 
   // Render

@@ -133,23 +133,42 @@ Frame.prototype.updateMesh = function()
   var j_three = new THREE.Vector3(this.j[0], this.j[1], this.j[2]);
   var k_three = new THREE.Vector3(this.k[0], this.k[1], this.k[2]);
 
-  //this.i_arrow = new THREE.ArrowHelper( i_three, p_three, 1, 0x0000ff );
-  //this.j_arrow = new THREE.ArrowHelper( j_three, p_three, 1, 0x00ff00 );
-  //this.k_arrow = new THREE.ArrowHelper( k_three, p_three, 1, 0xff0000 );
-  
   console.log("p_three: "+p_three.x);
   
   
   /*
    * i-arrow
    */
-  this.i_arrow.line.position.x = p_three.x;
+  var i_rot = new mat4.create();
+  mat4.fromRotation(i_rot, 1.5708, [0, 0, 1]);
+  console.log("i_rot: ");
+  for(i=0;i<16;i++)
+  {
+    console.log("i_rot["+i+"]: "+i_rot[i]);
+  }
+
+  var ia = new vec3.create();
+  console.log("Before transform: ("+this.p[0]+","+this.p[1]+","+this.p[2]+")");
+  vec3.transformMat3(ia, this.p, i_rot);
+  var p_i = new THREE.Vector3(ia[0], ia[1], ia[2]);
+  console.log("ia: ("+ia[0]+","+ia[1]+","+ia[2]+")");
+  
+  this.i_arrow.line.position.x = p_i.x;
+  this.i_arrow.line.position.y = p_i.y;
+  this.i_arrow.line.position.z = p_i.z;
+
+  this.i_arrow.cone.position.x = p_i.x;
+  this.i_arrow.cone.position.y = p_i.y+1;
+  this.i_arrow.cone.position.z = p_i.z;
+  
+
+  /*this.i_arrow.line.position.x = p_three.x;
   this.i_arrow.line.position.y = p_three.y;
   this.i_arrow.line.position.z = p_three.z;
 
   this.i_arrow.cone.position.x = p_three.x;
   this.i_arrow.cone.position.y = p_three.y+1;
-  this.i_arrow.cone.position.z = p_three.z;
+  this.i_arrow.cone.position.z = p_three.z;*/
   
   this.i_arrow.setDirection(i_three);
   
@@ -157,7 +176,7 @@ Frame.prototype.updateMesh = function()
    * j-arrow
    */
   var j_rot = new mat4.create();
-  mat4.fromRotation(j_rot, -1.5708, [0, 0, 1]);
+  mat4.fromRotation(j_rot, 0, [0, 0, 1]);
   console.log("j_rot: ");
   for(i=0;i<16;i++)
   {
@@ -193,7 +212,7 @@ Frame.prototype.updateMesh = function()
    * k-arrow
    */
   var k_rot = new mat4.create();
-  mat4.fromRotation(k_rot, -1.5708, [0, 1, 0]);
+  mat4.fromRotation(k_rot, -1.5708, [1, 0, 0]);
   console.log("k_rot: ");
   for(i=0;i<16;i++)
   {
