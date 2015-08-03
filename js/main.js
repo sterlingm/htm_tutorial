@@ -17,6 +17,9 @@ function initScene()
   // Create scene and camera
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  camera.up = new THREE.Vector3(0,1,0);
+  camera.position.x = 0;
+  camera.position.y = 0;
   camera.position.z = 5;
   
   // Create Renderer
@@ -33,8 +36,8 @@ function initScene()
   
   A = Frame.common.unit();
   A.print();
-  //c = new vec3.fromValues(0, 0, 1);
-  //A.selfRotation([0,0,1], 1.5708);
+  //A.selfRotation([0,0,1], 0.7854);
+  //A.selfRotation([0,0,1], 0.23);
   
   scene.add(A.i_arrow);
   scene.add(A.j_arrow);
@@ -101,10 +104,11 @@ function render()
   //scene.add(A.i_arrow);
   //console.log(A.i_arrow);
 
-  c = new vec3.fromValues(0, 0, 1);
-  A.selfRotation(c, 0.05);
+  c = new vec3.fromValues(0.001, 0, 0);
+  //A.selfRotation(c, 0.05);
   //c = new vec3.fromValues(0.005,0,0);
-  A.translate(vec3.fromValues(0.005,0,0));
+  A.selfTranslate(c);
+  //A.updateAxes();
   A.updateMesh();
   //B.updateMesh();
 
