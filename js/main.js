@@ -36,7 +36,7 @@ function initScene()
   
   A = Frame.common.unit();
   A.print();
-  //A.selfRotation([0,0,1], 0.7854);
+  A.selfRotation([0,0,1], 0.7854);
   //A.selfRotation([0,0,1], 0.23);
   
   scene.add(A.i_arrow);

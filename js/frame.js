@@ -140,12 +140,6 @@ Frame.prototype.getRotation = function()
 {
   console.log("In getRotation");
   var result = new mat4.create();
-  /*console.log("T_w: ");
-  for(i=0;i<16;i++)
-  {
-    console.log("T_w["+i+"]: "+this.T_w[i]);
-  }*/
-  
   
   for(i=0;i<12;i++)
   {
@@ -171,6 +165,40 @@ Frame.prototype.getPosition = function()
 
   return result;
 }
+
+Frame.prototype.getIHat = function()
+{
+  var result = new vec3.create();
+  
+  result[0] = this.T_w[0];
+  result[1] = this.T_w[1];
+  result[2] = this.T_w[2];
+
+  return result;
+}
+
+Frame.prototype.getJHat = function()
+{
+  var result = new vec3.create();
+  
+  result[0] = this.T_w[4];
+  result[1] = this.T_w[5];
+  result[2] = this.T_w[6];
+
+  return result;
+}
+
+Frame.prototype.getKHat = function()
+{
+  var result = new vec3.create();
+  
+  result[0] = this.T_w[8];
+  result[1] = this.T_w[9];
+  result[2] = this.T_w[10];
+
+  return result;
+}
+
 
 /**
  * @param axis unit vector in direction of axis given as array with 3 elements
@@ -205,10 +233,16 @@ Frame.prototype.updateAxes = function()
 
 Frame.prototype.updateMesh = function()
 {
+  var i = this.getIHat();
+  var j = this.getJHat();
+  var k = this.getKHat();
+  console.log("i: ["+i[0]+", "+i[1]+", "+i[2]+"]");
+  console.log("j: ["+j[0]+", "+j[1]+", "+j[2]+"]");
+
   var p_three = new THREE.Vector3(this.p[0], this.p[1], this.p[2]);
-  var i_three = new THREE.Vector3(this.i[0], this.i[1], this.i[2]);
-  var j_three = new THREE.Vector3(this.j[0], this.j[1], this.j[2]);
-  var k_three = new THREE.Vector3(this.k[0], this.k[1], this.k[2]);
+  var i_three = new THREE.Vector3(i[0], i[1], i[2]);
+  var j_three = new THREE.Vector3(j[0], j[1], j[2]);
+  var k_three = new THREE.Vector3(k[0], k[1], k[2]);
   
   
   /*
@@ -233,23 +267,89 @@ Frame.prototype.updateMesh = function()
   }*/
 
 
-  var ia = new vec3.create();
-  console.log("Before transform: ("+this.p[0]+","+this.p[1]+","+this.p[2]+")");
-  vec3.transformMat4(ia, this.p, R);
-  console.log("ia: ("+ia[0]+","+ia[1]+","+ia[2]+")");
-  var p_i = new THREE.Vector3(ia[0], ia[1], ia[2]);
+  
+  /*
+   * Creating a rotation matrix based on i_hat
+   * 
+   * Cannot just do fromRotation(0,i) - that will result in I
+   *
+   * Try to get angle of i from each axis, multiply those matrices
+   *  Did not work, not sure why
+   *
+   * Need to consider that all the arrow helpers begin at [0,1,0] and are rotated
+   *  
+   *
+   */
+  var i_from_x  = new mat4.create();
+  var dist      =  vec3.angle([1,0,0], i);
+  console.log("After i_from_x: i: ["+i[0]+", "+i[1]+", "+i[2]+"]");
+  //console.log("dist from world i: "+dist);
+  mat4.fromRotation(i_from_x, dist, [1,0,0]);
+  /*console.log("i_from_x: ");
+  for(index=0;index<16;index++)
+  {
+    console.log("i_from_x["+index+"]: "+i_from_x[index]);
+  }*/
+
+  var i_from_y = new mat4.create();
+  dist =  vec3.angle([0,1,0], i);
+  //console.log("dist: "+dist);
+
+
+  mat4.fromRotation(i_from_y, dist, [0,1,0]);
+  /*console.log("i_from_y: ");
+  for(index=0;index<16;index++)
+  {
+    console.log("i_from_y["+index+"]: "+i_from_y[index]);
+  }*/
+
+  var i_from_z = new mat4.create();
+  dist =  vec3.angle([0,0,1], i);
+  //console.log("dist: "+dist);
+  mat4.fromRotation(i_from_z, dist, [0,0,1]);
+  /*console.log("i_from_z: ");
+  for(i=0;i<16;i++)
+  {
+    console.log("i_from_z["+i+"]: "+i_from_z[i]);
+  }*/
+
+
+
+
+  var R_final = R;
+
+  //mat4.multiply(R_final, R_final, i_from_y);
+  //mat4.multiply(R_final, R_final, i_from_z);
+  //mat4.multiply(R_final, R_final, i_for_three);
+  //mat4.multiply(R_final, R_final, R);
+  
+  console.log("R_final: ");
+  for(index=0;index<16;index++)
+  {
+    console.log("R_final["+index+"]: "+R_final[index]);
+  }
+  
+  var p_final_i = vec3.create();
+  var R_inverse = mat4.create();
+  console.log("this.p: ("+this.p[0]+", "+this.p[1]+", "+this.p[2]+")");
+  var p_copy = vec3.fromValues(this.p[0], this.p[1], this.p[2]);
+  vec3.transformMat4(p_final_i, p_copy, R_final);
+ 
+  
+  var p_i = new THREE.Vector3(p_final_i[0], p_final_i[1], p_final_i[2]);
+  console.log("this.p: ("+this.p[0]+", "+this.p[1]+", "+this.p[2]+")");
   console.log("p_i: ("+p_i.x+","+p_i.y+","+p_i.z+")");
   console.log("i_three: ("+i_three.x+","+i_three.y+","+i_three.z+")");
 
   /*this.i_arrow.line.position.set(p_i);
   this.i_arrow.cone.position.set(p_i);*/
   
-  this.i_arrow.line.position.x = p_i.y;
-  this.i_arrow.line.position.y = p_i.x;
+  this.i_arrow.line.position.x = p_i.x;
+  this.i_arrow.line.position.y = p_i.y;
   this.i_arrow.line.position.z = p_i.z;
 
-  this.i_arrow.cone.position.x = p_i.y;
-  this.i_arrow.cone.position.y = p_i.x+1;
+  this.i_arrow.cone.position.x = p_i.x;
+  this.i_arrow.cone.position.y = p_i.y+1;
   this.i_arrow.cone.position.z = p_i.z;
   
 
@@ -268,22 +368,30 @@ Frame.prototype.updateMesh = function()
   /*
    * j-arrow
    */
-  var j_rot = new mat4.create();
-  mat4.fromRotation(j_rot, -1.5708, [0,0,1]);
-    
-  var ja = new vec3.create();
-  console.log("Before transform: ("+this.p[0]+","+this.p[1]+","+this.p[2]+")");
-  vec3.transformMat4(ja, this.p, R);
-  //vec3.transformMat4(ja, this.p, j_rot);
-  var p_j = new THREE.Vector3(ja[0], ja[1], ja[2]);
-  console.log("ja: ("+ja[0]+","+ja[1]+","+ja[2]+")");
+  console.log("i: ["+i[0]+", "+i[1]+", "+i[2]+"]");
+  console.log("j: ["+j[0]+", "+j[1]+", "+j[2]+"]");
+  var j_from_i  = new mat4.create();
+  var dist_ij      =  vec3.angle(i, j);
+  console.log("j dist from i: "+dist_ij);
+  mat4.fromRotation(j_from_i, dist, i);
+  
+  var p_final_j = vec3.create();
+  console.log("this.p: ("+this.p[0]+", "+this.p[1]+", "+this.p[2]+")");
+  
+  var p_copy = vec3.fromValues(this.p[0], this.p[1], this.p[2]);
+  vec3.transformMat4(p_final_j, p_copy, j_from_i);
+  vec3.transformMat4(p_final_j, p_final_j, R);
+ 
+  //vec3.transformMat4(p_final_j, p_copy, R_final);
+  
+  var p_j = new THREE.Vector3(p_final_j[0], p_final_j[1], p_final_j[2]);
+  console.log("this.p: ("+this.p[0]+", "+this.p[1]+", "+this.p[2]+")");
+  console.log("p_j: ("+p_j.x+","+p_j.y+","+p_j.z+")");
+  console.log("i_three: ("+i_three.x+","+i_three.y+","+i_three.z+")");
+  
   this.j_arrow.line.position.x = p_j.x;
   this.j_arrow.line.position.y = p_j.y;
   this.j_arrow.line.position.z = p_j.z;
-
-  /*this.j_arrow.line.position.x = p_j.y;
-  this.j_arrow.line.position.y = p_j.x;
-  this.j_arrow.line.position.z = p_j.z;*/
   
   this.j_arrow.cone.position.x = p_j.x;
   this.j_arrow.cone.position.y = p_j.y+1;
@@ -305,7 +413,7 @@ Frame.prototype.updateMesh = function()
    * k-arrow
    */
 
-  var ka = new vec3.create();
+  /*var ka = new vec3.create();
   //console.log("Before transform: ("+this.p[0]+","+this.p[1]+","+this.p[2]+")");
   vec3.transformMat4(ka, this.p, R);
   var p_k = new THREE.Vector3(ka[0], ka[1], ka[2]);
